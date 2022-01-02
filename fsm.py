@@ -7,7 +7,7 @@ text = event.message.text
         return text.lower() == "go to state1"
 """
 
-class TocMachine(GraphMachine):
+class TocMachine(Machine):
     def __init__(self, **machine_configs):
         self.machine = Machine(model=self, **machine_configs)
     def is_going_to_ask(self, event):
