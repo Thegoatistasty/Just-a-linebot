@@ -1,4 +1,4 @@
-from transitions import Machine
+from transitions.extensions import GraphMachine
 
 from utils import send_text_message
 
@@ -7,9 +7,9 @@ text = event.message.text
         return text.lower() == "go to state1"
 """
 
-class TocMachine(Machine):
+class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
-        self.machine = Machine(model=self, **machine_configs)
+        self.machine = GraphMachine(model=self, **machine_configs)
     def is_going_to_ask(self, event):
         return True
     def on_enter_ask(self, event):
