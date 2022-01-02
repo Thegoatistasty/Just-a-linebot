@@ -14,23 +14,117 @@ load_dotenv()
 
 
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["nothing", "ask","joke","bad","friend", "love", "work","argument","trivial", "severe","fade","third", "nothird", "single", "progress","fixable", "notfixable"],
     transitions=[
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "source": "nothing",
+            "dest": "ask",
+            "conditions": "is_going_to_ask",
+        },
+        
+        {
+            "trigger": "advance",
+            "source": "ask",
+            "dest": "bad",
+            "conditions": "is_going_to_bad",
         },
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "source": "ask",
+            "dest": "nothing",
+            "conditions": "is_going_to_nothing",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+#----------------------------------
+        {
+            "trigger": "advance",
+            "source": "bad",
+            "dest": "friend",
+            "conditions": "is_going_to_friend",
+        },
+        {
+            "trigger": "advance",
+            "source": "bad",
+            "dest": "love",
+            "conditions": "is_going_to_love",
+        },
+        {
+            "trigger": "advance",
+            "source": "bad",
+            "dest": "work",
+            "conditions": "is_going_to_work",
+        },
+        {
+            "trigger": "advance",
+            "source": "love",
+            "dest": "fade",
+            "conditions": "is_going_to_fade",
+        },
+        {
+            "trigger": "advance",
+            "source": "fade",
+            "dest": "third",
+            "conditions": "is_going_to_third",
+        },
+        {
+            "trigger": "advance",
+            "source": "fade",
+            "dest": "nothird",
+            "conditions": "is_going_to_nothird",
+        },
+        {
+            "trigger": "advance",
+            "source": "love",
+            "dest": "single",
+            "conditions": "is_going_to_single",
+        },
+        {
+            "trigger": "advance",
+            "source": "work",
+            "dest": "progress",
+            "conditions": "is_going_to_progress",
+        },
+        {
+            "trigger": "advance",
+            "source": "progress",
+            "dest": "fixable",
+            "conditions": "is_going_to_fixable",
+        },
+        {
+            "trigger": "advance",
+            "source": "progress",
+            "dest": "notfixable",
+            "conditions": "is_going_to_notfixable",
+        },
+#-----------------------------------pool
+        {
+            "trigger": "advance",
+            "source": ["friend","love"],
+            "dest": "argument",
+            "conditions": "is_going_to_argument",
+        },
+        {
+            "trigger": "advance",
+            "source": ["friend","work"],
+            "dest": "jerk",
+            "conditions": "is_going_to_jerk",
+        },
+        {
+            "trigger": "advance",
+            "source": "argument",
+            "dest": "trivial",
+            "conditions": "is_going_to_trivial",
+        },
+        {
+            "trigger": "advance",
+            "source": "argument",
+            "dest": "severe",
+            "conditions": "is_going_to_severe",
+        },
+        {"trigger": "advance", "source": ["bad","friend", "love", "work","argument"], "dest": "joke", "conditions": "is_going_to_joke"},
+        {"trigger": "go_back", "source": ["joke","jerk","trivial", "severe", "nothird", "third", "single","fixable","notfixable"], "dest": "nothing"},
     ],
-    initial="user",
+    initial="nothing",
     auto_transitions=False,
     show_conditions=True,
 )
@@ -104,7 +198,7 @@ def webhook_handler():
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+            send_text_message(event.reply_token, "Invalid option")
 
     return "OK"
 
@@ -113,8 +207,10 @@ def webhook_handler():
 def show_fsm():
     machine.get_graph().draw("fsm.png", prog="dot", format="png")
     return send_file("fsm.png", mimetype="image/png")
-
+def fsm():
+    machine.get_graph().draw("fsm.png", prog="dot", format="png")
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 8000)
+    fsm()
     app.run(host="0.0.0.0", port=port, debug=True)
