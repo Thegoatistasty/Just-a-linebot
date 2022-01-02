@@ -1,5 +1,5 @@
 # TOC Project 2021:A Line-bot where you can resort to whenever you feel down
-
+![fsm](./fsm.png)
 
 
 
