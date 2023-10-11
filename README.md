@@ -8,7 +8,6 @@
 * linefriends 
 * entering anything to start interact with the line-bot
 
-![line](./QRcode/QRcode.png)
 
 ## Setup
 More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ](https://hackmd.io/s/B1Xw7E8kN)
